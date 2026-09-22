@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE
+.vscode
+
 # local agent docs (not for reviewers)
 AGENTS.md
 CLAUDE.md
