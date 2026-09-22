@@ -3,6 +3,8 @@
     "title": "Bike Bundle Configurator",
     "description": "Configure a bike bundle with compatible accessories.",
     "bikesHeading": "Bikes",
-    "selectBike": "Select a bike"
+    "selectBike": "Select a bike",
+    "accessoriesHeading": "Accessories",
+    "selectBikeForAccessories": "Select a bike to see compatible accessories."
   }
 }

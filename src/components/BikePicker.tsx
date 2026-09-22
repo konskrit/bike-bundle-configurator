@@ -1,17 +1,17 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { useState } from "react";
 import type { Bike } from "@/types/catalog";
 
 type Props = {
   bikes: Bike[];
+  selectedBikeId: string | null;
+  onSelect: (bikeId: string) => void;
 };
 
-export function BikePicker({ bikes }: Props) {
+export function BikePicker({ bikes, selectedBikeId, onSelect }: Props) {
   const translate = useTranslations("App");
   const format = useFormatter();
-  const [selectedBikeId, setSelectedBikeId] = useState<string | null>(null);
 
   return (
     <section className="mt-8" aria-labelledby="bikes-heading">
@@ -32,7 +32,7 @@ export function BikePicker({ bikes }: Props) {
                 type="button"
                 role="option"
                 aria-selected={selected}
-                onClick={() => setSelectedBikeId(bike.id)}
+                onClick={() => onSelect(bike.id)}
                 className={`flex w-full items-baseline justify-between gap-4 py-3 text-left ${
                   selected ? "bg-zinc-100" : "hover:bg-zinc-50"
                 }`}
