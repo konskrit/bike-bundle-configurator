@@ -1,1 +1,6 @@
-{}
+{
+  "App": {
+    "title": "Bike Bundle Konfigurator",
+    "description": "Stellen Sie ein Fahrrad Bundle mit passendem Zubehör zusammen."
+  }
+}
