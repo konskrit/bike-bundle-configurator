@@ -30,4 +30,9 @@ body {
   :disabled {
     cursor: not-allowed;
   }
+
+  :focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 2px;
+  }
 }

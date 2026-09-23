@@ -75,7 +75,7 @@ export function AccessoryList({
                     onQuantityChange(accessory.id, Number(event.target.value))
                   }
                 />
-                <span className="w-8 tabular-nums">
+                <span className="w-8 tabular-nums" aria-hidden="true">
                   {Math.min(quantity, max)}
                 </span>
               </label>

@@ -28,6 +28,7 @@ export function SiteHeader() {
         <LocaleSwitcher />
         <Link
           href="/cart"
+          aria-label={translate("navCartLabel", { count: bundles.length })}
           className={
             pathname === "/cart"
               ? "text-sm font-medium text-zinc-950"

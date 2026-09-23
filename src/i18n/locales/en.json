@@ -12,6 +12,8 @@
     "addToCart": "Add bundle to cart",
     "navConfigurator": "Configurator",
     "navCart": "Cart",
+    "navCartLabel": "Cart, {count} bundles",
+    "languageLabel": "Language",
     "cartTitle": "Cart",
     "cartEmpty": "Your cart is empty.",
     "cartRemove": "Remove",
@@ -27,7 +29,7 @@
     "stockOutOfStock": "Out of stock",
     "stockAvailability": "Availability: {status}",
     "loading": "Loading…",
-    "stockUnavailable": "Stock levels unavailable.",
+    "stockUnavailable": "Something went wrong. Please try again.",
     "stockRetry": "Retry"
   }
 }

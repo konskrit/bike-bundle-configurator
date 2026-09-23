@@ -12,6 +12,8 @@
     "addToCart": "Bundle in den Warenkorb",
     "navConfigurator": "Konfigurator",
     "navCart": "Warenkorb",
+    "navCartLabel": "Warenkorb, {count} Bundles",
+    "languageLabel": "Sprache",
     "cartTitle": "Warenkorb",
     "cartEmpty": "Ihr Warenkorb ist leer.",
     "cartRemove": "Entfernen",
@@ -27,7 +29,7 @@
     "stockOutOfStock": "Nicht auf Lager",
     "stockAvailability": "Verfügbarkeit: {status}",
     "loading": "Wird geladen…",
-    "stockUnavailable": "Bestandsdaten nicht verfügbar.",
+    "stockUnavailable": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
     "stockRetry": "Erneut versuchen"
   }
 }
