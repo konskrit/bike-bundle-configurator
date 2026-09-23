@@ -1,16 +1,66 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
+import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
+import { requestCheckout } from "@/services/checkout";
+
+type CheckoutFeedback =
+  { type: "success"; message: string } | { type: "error"; message: string };
 
 export function CartView() {
   const translate = useTranslations("App");
   const format = useFormatter();
   const { bundles, removeBundle, clearCart } = useCart();
+  const [pending, setPending] = useState(false);
+  const [feedback, setFeedback] = useState<CheckoutFeedback | null>(null);
+
+  async function handleCheckout() {
+    if (pending || bundles.length === 0) {
+      return;
+    }
+
+    setPending(true);
+    setFeedback(null);
+
+    try {
+      const result = await requestCheckout(bundles);
+
+      if (!result.ok) {
+        setFeedback({
+          type: "error",
+          message: translate(
+            result.reason === "stock_unavailable"
+              ? "checkoutErrorStock"
+              : result.reason === "insufficient_stock"
+                ? "checkoutErrorInsufficient"
+                : "checkoutErrorGeneric",
+          ),
+        });
+        return;
+      }
+
+      clearCart();
+      setFeedback({
+        type: "success",
+        message: translate("checkoutSuccess"),
+      });
+    } finally {
+      setPending(false);
+    }
+  }
 
   if (bundles.length === 0) {
     return (
-      <p className="mt-8 text-sm text-zinc-600">{translate("cartEmpty")}</p>
+      <div className="mt-8 space-y-4">
+        {feedback?.type === "success" ? (
+          <p className="text-sm text-zinc-950" role="status" aria-live="polite">
+            {feedback.message}
+          </p>
+        ) : (
+          <p className="text-sm text-zinc-600">{translate("cartEmpty")}</p>
+        )}
+      </div>
     );
   }
 
@@ -105,6 +155,21 @@ export function CartView() {
             </dd>
           </div>
         </dl>
+
+        <button
+          type="button"
+          onClick={handleCheckout}
+          disabled={pending}
+          className="mt-6 rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        >
+          {pending ? translate("checkoutPending") : translate("checkout")}
+        </button>
+
+        {feedback?.type === "error" ? (
+          <p className="mt-4 text-sm text-red-700" role="alert">
+            {feedback.message}
+          </p>
+        ) : null}
       </section>
     </div>
   );

@@ -2,11 +2,13 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import type { Accessory, FrameType } from "@/types/catalog";
+import type { StockLevels } from "@/types/stock";
 
 type Props = {
   accessories: Accessory[];
   frameType: FrameType | null;
   quantities: Record<string, number>;
+  stock: StockLevels;
   onQuantityChange: (accessoryId: string, quantity: number) => void;
 };
 
@@ -14,6 +16,7 @@ export function AccessoryList({
   accessories,
   frameType,
   quantities,
+  stock,
   onQuantityChange,
 }: Props) {
   const translate = useTranslations("App");
@@ -39,6 +42,8 @@ export function AccessoryList({
         <ul className="mt-4 divide-y divide-zinc-200 border-y border-zinc-200">
           {compatible.map((accessory) => {
             const quantity = quantities[accessory.id] ?? 0;
+            const available = stock[accessory.id] ?? 0;
+            const max = Math.min(accessory.maxAmount, available);
 
             return (
               <li
@@ -53,6 +58,15 @@ export function AccessoryList({
                       currency: "EUR",
                     })}
                   </p>
+                  {available > 0 ? (
+                    <p className="mt-1 text-sm text-zinc-600">
+                      {translate("stockInStock", { count: available })}
+                    </p>
+                  ) : (
+                    <p className="mt-1 text-sm text-zinc-600">
+                      {translate("stockOutOfStock")}
+                    </p>
+                  )}
                 </div>
                 <label className="flex items-center gap-3 text-sm">
                   <span className="sr-only">
@@ -61,14 +75,17 @@ export function AccessoryList({
                   <input
                     type="range"
                     min={0}
-                    max={accessory.maxAmount}
+                    max={max}
                     step={1}
-                    value={quantity}
+                    value={Math.min(quantity, max)}
+                    disabled={max === 0}
                     onChange={(event) =>
                       onQuantityChange(accessory.id, Number(event.target.value))
                     }
                   />
-                  <span className="w-8 tabular-nums">{quantity}</span>
+                  <span className="w-8 tabular-nums">
+                    {Math.min(quantity, max)}
+                  </span>
                 </label>
               </li>
             );

@@ -6,21 +6,56 @@ import { AccessoryList } from "@/components/AccessoryList";
 import { BikePicker } from "@/components/BikePicker";
 import { BundleSummary } from "@/components/BundleSummary";
 import { useCart } from "@/components/CartProvider";
+import { useRouter } from "@/i18n/navigation";
 import { totals, type PriceLine } from "@/lib/pricing";
 import type { Accessory, Bike } from "@/types/catalog";
 import type { CartAccessoryLine } from "@/types/cart";
+import type { StockLevels } from "@/types/stock";
 
 type Props = {
   bikes: Bike[];
   accessories: Accessory[];
+  stock: StockLevels | null;
+  stockFailed?: boolean;
 };
 
-export function Configurator({ bikes, accessories }: Props) {
+export function Configurator({
+  bikes,
+  accessories,
+  stock,
+  stockFailed = false,
+}: Props) {
   const translate = useTranslations("App");
+  const router = useRouter();
   const { addBundle } = useCart();
   const [selectedBikeId, setSelectedBikeId] = useState<string | null>(null);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const selectedBike = bikes.find((bike) => bike.id === selectedBikeId) ?? null;
+  const [retrying, setRetrying] = useState(false);
+
+  if (stockFailed || stock == null) {
+    return (
+      <p className="mt-4 text-sm text-zinc-600" role="alert">
+        {translate("stockUnavailable")}{" "}
+        <button
+          type="button"
+          className="underline"
+          disabled={retrying}
+          onClick={() => {
+            setRetrying(true);
+            router.refresh();
+          }}
+        >
+          {translate("stockRetry")}
+        </button>
+      </p>
+    );
+  }
+
+  const activeBikeId =
+    selectedBikeId != null && (stock[selectedBikeId] ?? 0) <= 0
+      ? null
+      : selectedBikeId;
+  const selectedBike = bikes.find((bike) => bike.id === activeBikeId) ?? null;
 
   function handleSelectBike(bikeId: string) {
     setSelectedBikeId(bikeId);
@@ -42,7 +77,16 @@ export function Configurator({ bikes, accessories }: Props) {
       continue;
     }
 
-    accessoryLines.push({ accessory, quantity });
+    const capped = Math.min(
+      quantity,
+      accessory.maxAmount,
+      stock[accessoryId] ?? 0,
+    );
+    if (capped <= 0) {
+      continue;
+    }
+
+    accessoryLines.push({ accessory, quantity: capped });
   }
 
   const priceLines: PriceLine[] = selectedBike
@@ -60,9 +104,10 @@ export function Configurator({ bikes, accessories }: Props) {
       ]
     : [];
   const bundleTotals = totals(priceLines);
+  const bikeInStock = selectedBike != null && (stock[selectedBike.id] ?? 0) > 0;
 
   function handleAddToCart() {
-    if (!selectedBike) {
+    if (!selectedBike || !bikeInStock) {
       return;
     }
 
@@ -80,13 +125,15 @@ export function Configurator({ bikes, accessories }: Props) {
     <>
       <BikePicker
         bikes={bikes}
-        selectedBikeId={selectedBikeId}
+        selectedBikeId={activeBikeId}
+        stock={stock}
         onSelect={handleSelectBike}
       />
       <AccessoryList
         accessories={accessories}
         frameType={selectedBike?.frameType ?? null}
         quantities={quantities}
+        stock={stock}
         onQuantityChange={handleQuantityChange}
       />
       {selectedBike ? (
@@ -95,7 +142,8 @@ export function Configurator({ bikes, accessories }: Props) {
           <button
             type="button"
             onClick={handleAddToCart}
-            className="mt-4 rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white"
+            disabled={!bikeInStock}
+            className="mt-4 rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
           >
             {translate("addToCart")}
           </button>

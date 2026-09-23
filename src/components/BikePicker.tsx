@@ -2,14 +2,16 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import type { Bike } from "@/types/catalog";
+import type { StockLevels } from "@/types/stock";
 
 type Props = {
   bikes: Bike[];
   selectedBikeId: string | null;
+  stock: StockLevels;
   onSelect: (bikeId: string) => void;
 };
 
-export function BikePicker({ bikes, selectedBikeId, onSelect }: Props) {
+export function BikePicker({ bikes, selectedBikeId, stock, onSelect }: Props) {
   const translate = useTranslations("App");
   const format = useFormatter();
 
@@ -25,6 +27,8 @@ export function BikePicker({ bikes, selectedBikeId, onSelect }: Props) {
       >
         {bikes.map((bike) => {
           const selected = bike.id === selectedBikeId;
+          const available = stock[bike.id];
+          const outOfStock = available === 0;
 
           return (
             <li key={bike.id} role="presentation">
@@ -32,14 +36,24 @@ export function BikePicker({ bikes, selectedBikeId, onSelect }: Props) {
                 type="button"
                 role="option"
                 aria-selected={selected}
+                disabled={outOfStock}
                 onClick={() => onSelect(bike.id)}
                 className={`flex w-full items-baseline justify-between gap-4 py-3 text-left ${
                   selected ? "bg-zinc-100" : "hover:bg-zinc-50"
-                }`}
+                } disabled:opacity-50 disabled:hover:bg-transparent`}
               >
                 <div>
                   <p className="font-medium">{bike.name}</p>
                   <p className="text-sm text-zinc-600">{bike.frameType}</p>
+                  {available > 0 ? (
+                    <p className="mt-1 text-sm text-zinc-600">
+                      {translate("stockInStock", { count: available })}
+                    </p>
+                  ) : (
+                    <p className="mt-1 text-sm text-zinc-600">
+                      {translate("stockOutOfStock")}
+                    </p>
+                  )}
                 </div>
                 <p className="shrink-0 tabular-nums">
                   {format.number(bike.price, {

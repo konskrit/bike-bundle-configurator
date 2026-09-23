@@ -17,6 +17,17 @@
     "cartEmpty": "Your cart is empty.",
     "cartRemove": "Remove",
     "cartClear": "Clear cart",
-    "cartSummary": "Cart total"
+    "cartSummary": "Cart total",
+    "checkout": "Checkout",
+    "checkoutPending": "Checking stock…",
+    "checkoutSuccess": "Order placed successfully.",
+    "checkoutErrorStock": "Stock service is unavailable. Please try again.",
+    "checkoutErrorInsufficient": "Some items are not available in the requested quantity.",
+    "checkoutErrorGeneric": "Checkout failed. Please try again.",
+    "stockInStock": "{count} in stock",
+    "stockOutOfStock": "Out of stock",
+    "loading": "Loading…",
+    "stockUnavailable": "Stock levels unavailable.",
+    "stockRetry": "Retry"
   }
 }
