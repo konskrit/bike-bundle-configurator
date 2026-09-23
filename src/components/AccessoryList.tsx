@@ -28,7 +28,7 @@ export function AccessoryList({
 
   return (
     <section className="mt-10" aria-labelledby="accessories-heading">
-      <h2 id="accessories-heading" className="text-lg font-medium">
+      <h2 id="accessories-heading" className="px-4 text-lg font-medium">
         {translate("accessoriesHeading")}
       </h2>
       <ul className="mt-4 divide-y divide-zinc-200 border-y border-zinc-200">
@@ -40,7 +40,7 @@ export function AccessoryList({
           return (
             <li
               key={accessory.id}
-              className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
                 <p className="font-medium">{accessory.name}</p>

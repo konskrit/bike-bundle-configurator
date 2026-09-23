@@ -119,17 +119,28 @@ export function BikeConfigurator({
         {translate("backToBikes")}
       </Link>
 
-      <section className="mt-6 border-y border-zinc-200 py-6">
-        <h1 className="text-2xl font-semibold tracking-tight">{bike.name}</h1>
-        <p className="mt-2 text-sm text-zinc-600">{bike.frameType}</p>
-        <p className="mt-2 tabular-nums">
-          {format.number(bike.price, { style: "currency", currency: "EUR" })}
-        </p>
-        <p className="mt-2 text-sm text-zinc-600">
-          {bikeInStock
-            ? translate("stockInStock", { count: bikeAvailable })
-            : translate("stockOutOfStock")}
-        </p>
+      <section className="mt-6 border-y border-zinc-200 px-4 py-6">
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {bike.name}
+            </h1>
+            <p className="mt-2 text-sm text-zinc-600">{bike.frameType}</p>
+            <p className="mt-2 text-sm text-zinc-600">
+              {translate("stockAvailability", {
+                status: bikeInStock
+                  ? translate("stockInStock", { count: bikeAvailable })
+                  : translate("stockOutOfStock"),
+              })}
+            </p>
+          </div>
+          <p className="shrink-0 text-xl font-medium tabular-nums">
+            {format.number(bike.price, {
+              style: "currency",
+              currency: "EUR",
+            })}
+          </p>
+        </div>
       </section>
 
       <AccessoryList
@@ -141,14 +152,16 @@ export function BikeConfigurator({
       />
 
       <BundleSummary totals={bundleTotals} />
-      <button
-        type="button"
-        onClick={handleAddToCart}
-        disabled={!bikeInStock}
-        className="mt-4 rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
-      >
-        {translate("addToCart")}
-      </button>
+      <div className="mt-4 flex justify-end px-4">
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={!bikeInStock}
+          className="rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        >
+          {translate("addToCart")}
+        </button>
+      </div>
     </div>
   );
 }

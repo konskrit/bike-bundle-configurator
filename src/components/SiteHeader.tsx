@@ -11,7 +11,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="flex items-center justify-between gap-4 border-b border-zinc-200 px-4 py-3">
+    <header className="flex items-center gap-6 border-b border-zinc-200 px-6 py-3">
       <nav className="flex items-center gap-4 text-sm">
         <Link
           href="/"
@@ -23,17 +23,21 @@ export function SiteHeader() {
         >
           {translate("navConfigurator")}
         </Link>
+      </nav>
+      <div className="ml-auto flex items-center gap-6">
+        <LocaleSwitcher />
         <Link
           href="/cart"
           className={
-            pathname === "/cart" ? "font-medium text-zinc-950" : "text-zinc-600"
+            pathname === "/cart"
+              ? "text-sm font-medium text-zinc-950"
+              : "text-sm text-zinc-600"
           }
         >
           {translate("navCart")}
           {bundles.length > 0 ? ` (${bundles.length})` : null}
         </Link>
-      </nav>
-      <LocaleSwitcher />
+      </div>
     </header>
   );
 }

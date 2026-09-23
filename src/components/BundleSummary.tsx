@@ -12,7 +12,10 @@ export function BundleSummary({ totals }: Props) {
   const format = useFormatter();
 
   return (
-    <section className="mt-10 border-t border-zinc-200 pt-6" aria-live="polite">
+    <section
+      className="mt-10 border-t border-zinc-200 px-4 pt-6"
+      aria-live="polite"
+    >
       <h2 className="text-lg font-medium">{translate("bundleSummary")}</h2>
       <dl className="mt-4 space-y-2 text-sm">
         <div className="flex justify-between gap-4">

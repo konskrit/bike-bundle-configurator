@@ -25,6 +25,7 @@
     "checkoutErrorGeneric": "Checkout failed. Please try again.",
     "stockInStock": "{count} in stock",
     "stockOutOfStock": "Out of stock",
+    "stockAvailability": "Availability: {status}",
     "loading": "Loading…",
     "stockUnavailable": "Stock levels unavailable.",
     "stockRetry": "Retry"

@@ -12,7 +12,7 @@ export async function BikeList({ bikes }: Props) {
 
   return (
     <section className="mt-8" aria-labelledby="bikes-heading">
-      <h2 id="bikes-heading" className="text-lg font-medium">
+      <h2 id="bikes-heading" className="px-4 text-lg font-medium">
         {translate("bikesHeading")}
       </h2>
       <ul className="mt-4 divide-y divide-zinc-200 border-y border-zinc-200">
@@ -20,7 +20,7 @@ export async function BikeList({ bikes }: Props) {
           <li key={bike.id}>
             <Link
               href={`/bikes/${bike.id}`}
-              className="flex w-full items-baseline justify-between gap-4 py-3 hover:bg-zinc-50"
+              className="flex w-full items-baseline justify-between gap-4 px-4 py-3 hover:bg-zinc-100"
             >
               <p className="font-medium">{bike.name}</p>
               <p className="shrink-0 tabular-nums">

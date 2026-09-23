@@ -25,6 +25,7 @@
     "checkoutErrorGeneric": "Bestellung fehlgeschlagen. Bitte erneut versuchen.",
     "stockInStock": "{count} auf Lager",
     "stockOutOfStock": "Nicht auf Lager",
+    "stockAvailability": "Verfügbarkeit: {status}",
     "loading": "Wird geladen…",
     "stockUnavailable": "Bestandsdaten nicht verfügbar.",
     "stockRetry": "Erneut versuchen"
