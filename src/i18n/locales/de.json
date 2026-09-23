@@ -6,6 +6,9 @@
     "selectBike": "Fahrrad auswählen",
     "accessoriesHeading": "Zubehör",
     "selectBikeForAccessories": "Wählen Sie ein Fahrrad, um kompatibles Zubehör zu sehen.",
-    "quantityLabel": "Anzahl für {name}"
+    "quantityLabel": "Anzahl für {name}",
+    "bundleSummary": "Bundle Summe",
+    "netTotal": "Netto",
+    "grossTotal": "Brutto"
   }
 }

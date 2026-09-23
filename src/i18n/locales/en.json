@@ -6,6 +6,9 @@
     "selectBike": "Select a bike",
     "accessoriesHeading": "Accessories",
     "selectBikeForAccessories": "Select a bike to see compatible accessories.",
-    "quantityLabel": "Quantity for {name}"
+    "quantityLabel": "Quantity for {name}",
+    "bundleSummary": "Bundle total",
+    "netTotal": "Net",
+    "grossTotal": "Gross"
   }
 }
