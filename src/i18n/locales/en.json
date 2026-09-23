@@ -5,6 +5,7 @@
     "bikesHeading": "Bikes",
     "selectBike": "Select a bike",
     "accessoriesHeading": "Accessories",
-    "selectBikeForAccessories": "Select a bike to see compatible accessories."
+    "selectBikeForAccessories": "Select a bike to see compatible accessories.",
+    "quantityLabel": "Quantity for {name}"
   }
 }

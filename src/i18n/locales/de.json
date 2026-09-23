@@ -5,6 +5,7 @@
     "bikesHeading": "Fahrräder",
     "selectBike": "Fahrrad auswählen",
     "accessoriesHeading": "Zubehör",
-    "selectBikeForAccessories": "Wählen Sie ein Fahrrad, um kompatibles Zubehör zu sehen."
+    "selectBikeForAccessories": "Wählen Sie ein Fahrrad, um kompatibles Zubehör zu sehen.",
+    "quantityLabel": "Anzahl für {name}"
   }
 }

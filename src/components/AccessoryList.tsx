@@ -6,9 +6,16 @@ import type { Accessory, FrameType } from "@/types/catalog";
 type Props = {
   accessories: Accessory[];
   frameType: FrameType | null;
+  quantities: Record<string, number>;
+  onQuantityChange: (accessoryId: string, quantity: number) => void;
 };
 
-export function AccessoryList({ accessories, frameType }: Props) {
+export function AccessoryList({
+  accessories,
+  frameType,
+  quantities,
+  onQuantityChange,
+}: Props) {
   const translate = useTranslations("App");
   const format = useFormatter();
 
@@ -30,20 +37,42 @@ export function AccessoryList({ accessories, frameType }: Props) {
         </p>
       ) : (
         <ul className="mt-4 divide-y divide-zinc-200 border-y border-zinc-200">
-          {compatible.map((accessory) => (
-            <li
-              key={accessory.id}
-              className="flex items-baseline justify-between gap-4 py-3"
-            >
-              <p className="font-medium">{accessory.name}</p>
-              <p className="shrink-0 tabular-nums">
-                {format.number(accessory.price, {
-                  style: "currency",
-                  currency: "EUR",
-                })}
-              </p>
-            </li>
-          ))}
+          {compatible.map((accessory) => {
+            const quantity = quantities[accessory.id] ?? 0;
+
+            return (
+              <li
+                key={accessory.id}
+                className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <p className="font-medium">{accessory.name}</p>
+                  <p className="shrink-0 text-sm text-zinc-600 tabular-nums">
+                    {format.number(accessory.price, {
+                      style: "currency",
+                      currency: "EUR",
+                    })}
+                  </p>
+                </div>
+                <label className="flex items-center gap-3 text-sm">
+                  <span className="sr-only">
+                    {translate("quantityLabel", { name: accessory.name })}
+                  </span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={accessory.maxAmount}
+                    step={1}
+                    value={quantity}
+                    onChange={(event) =>
+                      onQuantityChange(accessory.id, Number(event.target.value))
+                    }
+                  />
+                  <span className="w-8 tabular-nums">{quantity}</span>
+                </label>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
