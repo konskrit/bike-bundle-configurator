@@ -16,7 +16,9 @@ export function SiteHeader() {
         <Link
           href="/"
           className={
-            pathname === "/" ? "font-medium text-zinc-950" : "text-zinc-600"
+            pathname === "/" || pathname.startsWith("/bikes")
+              ? "font-medium text-zinc-950"
+              : "text-zinc-600"
           }
         >
           {translate("navConfigurator")}

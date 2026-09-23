@@ -8,6 +8,10 @@ export function getBikes(): Bike[] {
   return bikesJson as Bike[];
 }
 
+export function getBike(id: string): Bike | undefined {
+  return getBikes().find((bike) => bike.id === id);
+}
+
 export function getAccessories(): Accessory[] {
   return accessoriesJson as Accessory[];
 }
