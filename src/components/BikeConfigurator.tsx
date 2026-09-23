@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AccessoryList } from "@/components/AccessoryList";
 import { BundleSummary } from "@/components/BundleSummary";
 import { useCart } from "@/components/CartProvider";
@@ -29,7 +29,7 @@ export function BikeConfigurator({
   const router = useRouter();
   const { addBundle } = useCart();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [retrying, setRetrying] = useState(false);
+  const addingLock = useRef(false);
 
   if (stockFailed || stock == null) {
     return (
@@ -42,9 +42,7 @@ export function BikeConfigurator({
           <button
             type="button"
             className="underline"
-            disabled={retrying}
             onClick={() => {
-              setRetrying(true);
               router.refresh();
             }}
           >
@@ -100,10 +98,11 @@ export function BikeConfigurator({
   const bundleTotals = totals(priceLines);
 
   function handleAddToCart() {
-    if (!bikeInStock) {
+    if (!bikeInStock || addingLock.current) {
       return;
     }
 
+    addingLock.current = true;
     addBundle({
       bike,
       accessories: accessoryLines,
@@ -111,6 +110,9 @@ export function BikeConfigurator({
       gross: bundleTotals.gross,
     });
     setQuantities({});
+    queueMicrotask(() => {
+      addingLock.current = false;
+    });
   }
 
   return (
