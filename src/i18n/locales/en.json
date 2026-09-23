@@ -9,6 +9,14 @@
     "quantityLabel": "Quantity for {name}",
     "bundleSummary": "Bundle total",
     "netTotal": "Net",
-    "grossTotal": "Gross"
+    "grossTotal": "Gross",
+    "addToCart": "Add bundle to cart",
+    "navConfigurator": "Configurator",
+    "navCart": "Cart",
+    "cartTitle": "Cart",
+    "cartEmpty": "Your cart is empty.",
+    "cartRemove": "Remove",
+    "cartClear": "Clear cart",
+    "cartSummary": "Cart total"
   }
 }

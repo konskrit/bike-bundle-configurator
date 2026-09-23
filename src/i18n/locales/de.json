@@ -9,6 +9,14 @@
     "quantityLabel": "Anzahl für {name}",
     "bundleSummary": "Bundle Summe",
     "netTotal": "Netto",
-    "grossTotal": "Brutto"
+    "grossTotal": "Brutto",
+    "addToCart": "Bundle in den Warenkorb",
+    "navConfigurator": "Konfigurator",
+    "navCart": "Warenkorb",
+    "cartTitle": "Warenkorb",
+    "cartEmpty": "Ihr Warenkorb ist leer.",
+    "cartRemove": "Entfernen",
+    "cartClear": "Warenkorb leeren",
+    "cartSummary": "Warenkorb Summe"
   }
 }
