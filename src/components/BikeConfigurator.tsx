@@ -39,6 +39,7 @@ export function BikeConfigurator({
         <Link href="/" className="text-sm text-zinc-600 underline">
           {translate("backToBikes")}
         </Link>
+        <h1 className="text-2xl font-semibold tracking-tight">{bike.name}</h1>
         <p className="text-sm text-zinc-600" role="alert">
           {translate("stockUnavailable")}{" "}
           <button

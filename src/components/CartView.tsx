@@ -45,12 +45,12 @@ export function CartView() {
         return;
       }
 
-      clearCart();
-      router.refresh();
       setFeedback({
         type: "success",
         message: translate("checkoutSuccess"),
       });
+      clearCart();
+      router.refresh();
     } finally {
       checkoutLock.current = false;
       setPending(false);

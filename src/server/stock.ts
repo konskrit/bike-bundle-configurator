@@ -45,10 +45,22 @@ export function catalogStockLevels() {
   }));
 }
 
+function aggregateQuantities(
+  items: { id: string; quantity: number }[],
+): { id: string; quantity: number }[] {
+  const quantities = new Map<string, number>();
+
+  for (const { id, quantity } of items) {
+    quantities.set(id, (quantities.get(id) ?? 0) + quantity);
+  }
+
+  return [...quantities.entries()].map(([id, quantity]) => ({ id, quantity }));
+}
+
 export function checkStock(
   items: { id: string; quantity: number }[],
 ): { id: string; available: number; requested: number; ok: boolean }[] {
-  return items.map((item) => {
+  return aggregateQuantities(items).map((item) => {
     const available = availableFor(item.id);
     return {
       id: item.id,
@@ -67,8 +79,8 @@ export function reserveStock(items: { id: string; quantity: number }[]) {
   }
 
   const stock = getStock();
-  for (const item of items) {
-    stock[item.id] = availableFor(item.id) - item.quantity;
+  for (const item of checked) {
+    stock[item.id] = item.available - item.requested;
   }
 
   return { ok: true as const, items: checked };

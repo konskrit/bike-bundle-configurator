@@ -61,4 +61,22 @@ describe("reserveStock", () => {
     expect(result.ok).toBe(false);
     expect(availableFor("bike-001")).toBe(4);
   });
+
+  it("aggregates duplicate ids before checking and decrementing", () => {
+    const result = reserveStock([
+      { id: "bike-001", quantity: 2 },
+      { id: "bike-001", quantity: 3 },
+    ]);
+
+    expect(result.ok).toBe(false);
+    expect(result.items).toEqual([
+      {
+        id: "bike-001",
+        available: 4,
+        requested: 5,
+        ok: false,
+      },
+    ]);
+    expect(availableFor("bike-001")).toBe(4);
+  });
 });

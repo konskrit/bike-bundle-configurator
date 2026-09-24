@@ -18,7 +18,7 @@ function isStockItem(value: unknown): value is StockItem {
   return (
     typeof item.id === "string" &&
     typeof item.quantity === "number" &&
-    Number.isFinite(item.quantity) &&
+    Number.isInteger(item.quantity) &&
     item.quantity >= 1
   );
 }

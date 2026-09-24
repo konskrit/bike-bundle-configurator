@@ -33,7 +33,12 @@ export default async function BikePage({ params }: Props) {
     <PageShell>
       <Suspense
         fallback={
-          <p className="mt-4 text-sm text-zinc-600">{translate("loading")}</p>
+          <div className="mt-8 space-y-4">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {bike.name}
+            </h1>
+            <p className="text-sm text-zinc-600">{translate("loading")}</p>
+          </div>
         }
       >
         <BikePageContent bike={bike} accessories={accessories} />
