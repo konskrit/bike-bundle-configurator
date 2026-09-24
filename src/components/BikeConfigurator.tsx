@@ -143,7 +143,6 @@ export function BikeConfigurator({
 
       <AccessoryList
         accessories={accessories}
-        frameType={bike.frameType}
         quantities={quantities}
         stock={stock}
         disabled={!bikeInStock}

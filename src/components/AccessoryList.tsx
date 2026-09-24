@@ -1,12 +1,11 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import type { Accessory, FrameType } from "@/types/catalog";
+import type { Accessory } from "@/types/catalog";
 import type { StockLevels } from "@/types/stock";
 
 type Props = {
   accessories: Accessory[];
-  frameType: FrameType;
   quantities: Record<string, number>;
   stock: StockLevels;
   disabled?: boolean;
@@ -15,7 +14,6 @@ type Props = {
 
 export function AccessoryList({
   accessories,
-  frameType,
   quantities,
   stock,
   disabled = false,
@@ -25,17 +23,13 @@ export function AccessoryList({
   const translateAccessory = useTranslations("Accessories");
   const format = useFormatter();
 
-  const compatible = accessories.filter((accessory) =>
-    accessory.compatibleFrameTypes.includes(frameType),
-  );
-
   return (
     <section className="mt-10" aria-labelledby="accessories-heading">
       <h2 id="accessories-heading" className="px-4 text-lg font-medium">
         {translate("accessoriesHeading")}
       </h2>
       <ul className="mt-4 divide-y divide-zinc-200 border-y border-zinc-200">
-        {compatible.map((accessory) => {
+        {accessories.map((accessory) => {
           const quantity = quantities[accessory.id] ?? 0;
           const available = stock[accessory.id] ?? 0;
           const max = disabled ? 0 : Math.min(accessory.maxAmount, available);

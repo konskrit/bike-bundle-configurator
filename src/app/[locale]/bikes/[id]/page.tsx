@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { BikeConfigurator } from "@/components/BikeConfigurator";
-import { getAccessories, getBike } from "@/server/catalog";
+import { PageShell } from "@/components/PageShell";
+import { getAccessoriesForFrame, getBike } from "@/server/catalog";
 import {
   StockServiceError,
   catalogStockLevels,
@@ -26,10 +27,10 @@ export default async function BikePage({ params }: Props) {
   }
 
   const translate = await getTranslations("App");
-  const accessories = getAccessories();
+  const accessories = getAccessoriesForFrame(bike.frameType);
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
+    <PageShell>
       <Suspense
         fallback={
           <p className="mt-4 text-sm text-zinc-600">{translate("loading")}</p>
@@ -37,7 +38,7 @@ export default async function BikePage({ params }: Props) {
       >
         <BikePageContent bike={bike} accessories={accessories} />
       </Suspense>
-    </main>
+    </PageShell>
   );
 }
 
