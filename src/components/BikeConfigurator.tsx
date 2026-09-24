@@ -6,7 +6,7 @@ import { AccessoryList } from "@/components/AccessoryList";
 import { BundleSummary } from "@/components/BundleSummary";
 import { useCart } from "@/components/CartProvider";
 import { Link, useRouter } from "@/i18n/navigation";
-import { totals, type PriceLine } from "@/lib/pricing";
+import { bundleTotals } from "@/lib/pricing";
 import type { Accessory, Bike } from "@/types/catalog";
 import type { CartAccessoryLine } from "@/types/cart";
 import type { StockLevels } from "@/types/stock";
@@ -64,7 +64,7 @@ export function BikeConfigurator({
 
   const accessoryLines: CartAccessoryLine[] = [];
   for (const [accessoryId, quantity] of Object.entries(quantities)) {
-    if (quantity <= 0) {
+    if (quantity <= 0 || !bikeInStock) {
       continue;
     }
 
@@ -85,19 +85,7 @@ export function BikeConfigurator({
     accessoryLines.push({ accessory, quantity: capped });
   }
 
-  const priceLines: PriceLine[] = [
-    {
-      price: bike.price,
-      taxRate: bike.taxRate,
-      quantity: 1,
-    },
-    ...accessoryLines.map(({ accessory, quantity }) => ({
-      price: accessory.price,
-      taxRate: accessory.taxRate,
-      quantity,
-    })),
-  ];
-  const bundleTotals = totals(priceLines);
+  const money = bundleTotals(bike, accessoryLines);
 
   function handleAddToCart() {
     if (!bikeInStock || addingLock.current) {
@@ -108,8 +96,8 @@ export function BikeConfigurator({
     addBundle({
       bike,
       accessories: accessoryLines,
-      net: bundleTotals.net,
-      gross: bundleTotals.gross,
+      net: money.net,
+      gross: money.gross,
     });
     setQuantities({});
     setAddedToCart(true);
@@ -158,10 +146,11 @@ export function BikeConfigurator({
         frameType={bike.frameType}
         quantities={quantities}
         stock={stock}
+        disabled={!bikeInStock}
         onQuantityChange={handleQuantityChange}
       />
 
-      <BundleSummary totals={bundleTotals} />
+      <BundleSummary totals={money} />
       <div className="mt-4 flex flex-col items-end gap-2 px-4">
         <button
           type="button"

@@ -7,6 +7,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { withAccessoryQuantity } from "@/lib/cart-bundle";
 import type { CartBundle } from "@/types/cart";
 
 const STORAGE_KEY = "bike-bundle-cart";
@@ -15,6 +16,11 @@ type CartContextValue = {
   bundles: CartBundle[];
   addBundle: (bundle: Omit<CartBundle, "id">) => void;
   removeBundle: (bundleId: string) => void;
+  updateAccessoryQuantity: (
+    bundleId: string,
+    accessoryId: string,
+    quantity: number,
+  ) => void;
   clearCart: () => void;
 };
 
@@ -85,6 +91,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     persist(bundles.filter((bundle) => bundle.id !== bundleId));
   }, []);
 
+  const updateAccessoryQuantity = useCallback(
+    (bundleId: string, accessoryId: string, quantity: number) => {
+      persist(
+        bundles.map((bundle) =>
+          bundle.id === bundleId
+            ? withAccessoryQuantity(bundle, accessoryId, quantity)
+            : bundle,
+        ),
+      );
+    },
+    [],
+  );
+
   const clearCart = useCallback(() => {
     persist([]);
   }, []);
@@ -95,6 +114,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         bundles: snapshot,
         addBundle,
         removeBundle,
+        updateAccessoryQuantity,
         clearCart,
       }}
     >

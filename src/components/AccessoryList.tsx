@@ -9,6 +9,7 @@ type Props = {
   frameType: FrameType;
   quantities: Record<string, number>;
   stock: StockLevels;
+  disabled?: boolean;
   onQuantityChange: (accessoryId: string, quantity: number) => void;
 };
 
@@ -17,6 +18,7 @@ export function AccessoryList({
   frameType,
   quantities,
   stock,
+  disabled = false,
   onQuantityChange,
 }: Props) {
   const translate = useTranslations("App");
@@ -36,7 +38,7 @@ export function AccessoryList({
         {compatible.map((accessory) => {
           const quantity = quantities[accessory.id] ?? 0;
           const available = stock[accessory.id] ?? 0;
-          const max = Math.min(accessory.maxAmount, available);
+          const max = disabled ? 0 : Math.min(accessory.maxAmount, available);
           const name = translateAccessory(accessory.id);
 
           return (

@@ -30,3 +30,20 @@ export function totals(lines: PriceLine[]): MoneyTotals {
     { net: 0, gross: 0 },
   );
 }
+
+export function bundleTotals(
+  bike: { price: number; taxRate: number },
+  accessories: {
+    accessory: { price: number; taxRate: number };
+    quantity: number;
+  }[],
+): MoneyTotals {
+  return totals([
+    { price: bike.price, taxRate: bike.taxRate, quantity: 1 },
+    ...accessories.map(({ accessory, quantity }) => ({
+      price: accessory.price,
+      taxRate: accessory.taxRate,
+      quantity,
+    })),
+  ]);
+}

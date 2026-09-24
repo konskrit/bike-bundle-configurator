@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { useRef, useState } from "react";
+import { CartBundleItem } from "@/components/CartBundleItem";
 import { useCart } from "@/components/CartProvider";
 import { useRouter } from "@/i18n/navigation";
 import { requestCheckout } from "@/services/checkout";
@@ -11,11 +12,9 @@ type CheckoutFeedback =
 
 export function CartView() {
   const translate = useTranslations("App");
-  const translateAccessory = useTranslations("Accessories");
-  const frameTypes = useTranslations("FrameTypes");
   const format = useFormatter();
   const router = useRouter();
-  const { bundles, removeBundle, clearCart } = useCart();
+  const { bundles, clearCart } = useCart();
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState<CheckoutFeedback | null>(null);
   const checkoutLock = useRef(false);
@@ -37,7 +36,7 @@ export function CartView() {
           type: "error",
           message: translate(
             result.reason === "stock_unavailable"
-              ? "checkoutErrorStock"
+              ? "stockUnavailable"
               : result.reason === "insufficient_stock"
                 ? "checkoutErrorInsufficient"
                 : "checkoutErrorGeneric",
@@ -95,53 +94,7 @@ export function CartView() {
 
       <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
         {bundles.map((bundle) => (
-          <li key={bundle.id} className="px-4 py-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="font-medium">{bundle.bike.name}</p>
-                <p className="text-sm text-zinc-600">
-                  {frameTypes(bundle.bike.frameType)}
-                </p>
-                {bundle.accessories.length > 0 ? (
-                  <ul className="mt-2 space-y-1 text-sm text-zinc-600">
-                    {bundle.accessories.map(({ accessory, quantity }) => (
-                      <li key={accessory.id}>
-                        {translateAccessory(accessory.id)} × {quantity}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-              <button
-                type="button"
-                onClick={() => removeBundle(bundle.id)}
-                disabled={pending}
-                className="shrink-0 text-sm text-zinc-600 underline disabled:opacity-60"
-              >
-                {translate("cartRemove")}
-              </button>
-            </div>
-            <dl className="mt-3 space-y-1 text-sm">
-              <div className="flex justify-between gap-4">
-                <dt className="text-zinc-600">{translate("netTotal")}</dt>
-                <dd className="tabular-nums">
-                  {format.number(bundle.net, {
-                    style: "currency",
-                    currency: "EUR",
-                  })}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-zinc-600">{translate("grossTotal")}</dt>
-                <dd className="font-medium tabular-nums">
-                  {format.number(bundle.gross, {
-                    style: "currency",
-                    currency: "EUR",
-                  })}
-                </dd>
-              </div>
-            </dl>
-          </li>
+          <CartBundleItem key={bundle.id} bundle={bundle} pending={pending} />
         ))}
       </ul>
 
