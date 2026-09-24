@@ -3,6 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
+import { useRouter } from "@/i18n/navigation";
 import { requestCheckout } from "@/services/checkout";
 
 type CheckoutFeedback =
@@ -11,6 +12,7 @@ type CheckoutFeedback =
 export function CartView() {
   const translate = useTranslations("App");
   const format = useFormatter();
+  const router = useRouter();
   const { bundles, removeBundle, clearCart } = useCart();
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState<CheckoutFeedback | null>(null);
@@ -41,6 +43,7 @@ export function CartView() {
       }
 
       clearCart();
+      router.refresh();
       setFeedback({
         type: "success",
         message: translate("checkoutSuccess"),

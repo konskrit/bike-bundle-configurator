@@ -11,6 +11,8 @@ import {
 import type { Accessory, Bike } from "@/types/catalog";
 import type { StockLevels } from "@/types/stock";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ id: string }>;
 };

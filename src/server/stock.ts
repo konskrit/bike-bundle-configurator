@@ -3,10 +3,18 @@ import "server-only";
 import stockJson from "../../data/stock.json";
 import { getAccessories, getBikes } from "@/server/catalog";
 
-const stock = stockJson as Record<string, number>;
+const initialStock = stockJson as Record<string, number>;
+
+const globalForStock = globalThis as typeof globalThis & {
+  __bikeBundleStock?: Record<string, number>;
+};
+
+function getStock() {
+  return (globalForStock.__bikeBundleStock ??= { ...initialStock });
+}
 
 export function availableFor(id: string): number {
-  return stock[id] ?? 0;
+  return getStock()[id] ?? 0;
 }
 
 export async function withStockLatency<T>(
@@ -49,4 +57,19 @@ export function checkStock(
       ok: item.quantity <= available,
     };
   });
+}
+
+export function reserveStock(items: { id: string; quantity: number }[]) {
+  const checked = checkStock(items);
+
+  if (checked.some((item) => !item.ok)) {
+    return { ok: false as const, items: checked };
+  }
+
+  const stock = getStock();
+  for (const item of items) {
+    stock[item.id] = availableFor(item.id) - item.quantity;
+  }
+
+  return { ok: true as const, items: checked };
 }

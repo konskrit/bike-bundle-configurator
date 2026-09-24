@@ -1,6 +1,6 @@
 import {
   StockServiceError,
-  checkStock,
+  reserveStock,
   withStockLatency,
 } from "@/server/stock";
 
@@ -45,16 +45,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const checked = await withStockLatency(() => checkStock(items));
+    const reserved = await withStockLatency(() => reserveStock(items));
 
-    if (checked.some((item) => !item.ok)) {
+    if (!reserved.ok) {
       return Response.json(
-        { error: "INSUFFICIENT_STOCK", items: checked },
+        { error: "INSUFFICIENT_STOCK", items: reserved.items },
         { status: 409 },
       );
     }
 
-    return Response.json({ items: checked });
+    return Response.json({ items: reserved.items });
   } catch (error) {
     if (error instanceof StockServiceError) {
       return Response.json({ error: "STOCK_SERVICE_FAILED" }, { status: 503 });

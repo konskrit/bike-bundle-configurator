@@ -1,5 +1,20 @@
-import { describe, expect, it } from "vitest";
-import { availableFor, checkStock } from "./stock";
+import { beforeEach, describe, expect, it } from "vitest";
+import stockJson from "../../data/stock.json";
+import { availableFor, checkStock, reserveStock } from "./stock";
+
+const initialStock = stockJson as Record<string, number>;
+
+function resetStock() {
+  (
+    globalThis as typeof globalThis & {
+      __bikeBundleStock?: Record<string, number>;
+    }
+  ).__bikeBundleStock = { ...initialStock };
+}
+
+beforeEach(() => {
+  resetStock();
+});
 
 describe("availableFor", () => {
   it("returns stock for known products and zero for unknown", () => {
@@ -29,5 +44,21 @@ describe("checkStock", () => {
         ok: false,
       },
     ]);
+  });
+});
+
+describe("reserveStock", () => {
+  it("decrements stock when the request fits", () => {
+    const result = reserveStock([{ id: "bike-001", quantity: 2 }]);
+
+    expect(result.ok).toBe(true);
+    expect(availableFor("bike-001")).toBe(2);
+  });
+
+  it("leaves stock unchanged when the request does not fit", () => {
+    const result = reserveStock([{ id: "bike-001", quantity: 99 }]);
+
+    expect(result.ok).toBe(false);
+    expect(availableFor("bike-001")).toBe(4);
   });
 });
