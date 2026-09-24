@@ -35,6 +35,7 @@ export function CartBundleItem({ bundle, pending }: Props) {
           type="button"
           onClick={() => removeBundle(bundle.id)}
           disabled={pending}
+          aria-label={`${translate("cartRemove")}: ${bundle.bike.name}`}
           className="shrink-0 text-sm text-zinc-600 underline disabled:opacity-60"
         >
           {translate("cartRemove")}
@@ -93,6 +94,7 @@ export function CartBundleItem({ bundle, pending }: Props) {
                   <button
                     type="button"
                     disabled={pending}
+                    aria-label={`${translate("cartRemove")}: ${name}`}
                     onClick={() =>
                       updateAccessoryQuantity(bundle.id, accessory.id, 0)
                     }

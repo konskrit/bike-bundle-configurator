@@ -74,13 +74,13 @@ export async function setCartAccessoryQuantity(
 
 export async function removeCartAccessory(page: Page, accessoryName: string) {
   await cartAccessoryRow(page, accessoryName)
-    .getByRole("button", { name: "Remove" })
+    .getByRole("button", { name: `Remove: ${accessoryName}` })
     .click();
 }
 
 export async function removeCartBundle(page: Page, bikeName: string) {
   const bundle = page.locator("ul.divide-y > li").filter({ hasText: bikeName });
-  await bundle.getByRole("button", { name: "Remove" }).first().click();
+  await bundle.getByRole("button", { name: `Remove: ${bikeName}` }).click();
 }
 
 export async function checkoutUntilSuccess(page: Page) {

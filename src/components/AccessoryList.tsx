@@ -48,15 +48,11 @@ export function AccessoryList({
                     currency: "EUR",
                   })}
                 </p>
-                {available > 0 ? (
-                  <p className="mt-1 text-sm text-zinc-600">
-                    {translate("stockInStock", { count: available })}
-                  </p>
-                ) : (
-                  <p className="mt-1 text-sm text-zinc-600">
-                    {translate("stockOutOfStock")}
-                  </p>
-                )}
+                <p className="mt-1 text-sm text-zinc-600">
+                  {available > 0
+                    ? translate("stockInStock", { count: available })
+                    : translate("stockOutOfStock")}
+                </p>
               </div>
               <label className="flex items-center gap-3 text-sm">
                 <span className="sr-only">

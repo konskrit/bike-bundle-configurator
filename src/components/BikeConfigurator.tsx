@@ -161,7 +161,7 @@ export function BikeConfigurator({
           {translate("addToCart")}
         </button>
         {addedToCart ? (
-          <p className="text-sm text-zinc-600" role="status" aria-live="polite">
+          <p className="text-sm text-zinc-600" role="status">
             {translate("addToCartSuccess")}
           </p>
         ) : null}

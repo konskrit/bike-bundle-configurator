@@ -22,13 +22,13 @@ export async function BikeList({ bikes }: Props) {
               href={`/bikes/${bike.id}`}
               className="flex w-full items-baseline justify-between gap-4 px-4 py-3 hover:bg-zinc-100"
             >
-              <p className="font-medium">{bike.name}</p>
-              <p className="shrink-0 tabular-nums">
+              <span className="font-medium">{bike.name}</span>
+              <span className="shrink-0 tabular-nums">
                 {format.number(bike.price, {
                   style: "currency",
                   currency: "EUR",
                 })}
-              </p>
+              </span>
             </Link>
           </li>
         ))}

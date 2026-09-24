@@ -61,7 +61,7 @@ export function CartView() {
     return (
       <div className="mt-8 space-y-4 px-4">
         {feedback?.type === "success" ? (
-          <p className="text-sm text-zinc-950" role="status" aria-live="polite">
+          <p className="text-sm text-zinc-950" role="status">
             {feedback.message}
           </p>
         ) : (
