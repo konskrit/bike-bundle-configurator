@@ -7,7 +7,7 @@ export type CheckoutResult =
       reason: "stock_unavailable" | "insufficient_stock" | "failed";
     };
 
-function collectStockItems(bundles: CartBundle[]) {
+export function collectStockItems(bundles: CartBundle[]) {
   const quantities = new Map<string, number>();
 
   for (const bundle of bundles) {
