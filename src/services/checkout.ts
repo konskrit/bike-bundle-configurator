@@ -1,6 +1,6 @@
 import type { CartBundle } from "@/types/cart";
 
-export type CheckoutResult =
+type CheckoutResult =
   | { ok: true }
   | {
       ok: false;

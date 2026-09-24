@@ -1,4 +1,4 @@
-export type PriceLine = {
+type PriceLine = {
   price: number;
   taxRate: number;
   quantity: number;
