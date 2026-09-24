@@ -10,6 +10,7 @@
     "netTotal": "Netto",
     "grossTotal": "Brutto",
     "addToCart": "Bundle in den Warenkorb",
+    "addToCartSuccess": "Zum Warenkorb hinzugefügt.",
     "navConfigurator": "Konfigurator",
     "navCart": "Warenkorb",
     "navCartLabel": "Warenkorb, {count} Bundles",
@@ -31,5 +32,31 @@
     "loading": "Wird geladen…",
     "stockUnavailable": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
     "stockRetry": "Erneut versuchen"
+  },
+  "Accessories": {
+    "acc-001": "Urban Pro Fahrradhelm",
+    "acc-002": "SecureLock Kettenschloss 12mm",
+    "acc-003": "LED Beleuchtungsset Vorder- & Rücklicht",
+    "acc-004": "GPS Fahrradcomputer Basic",
+    "acc-005": "Flaschenhalter aus Aluminium",
+    "acc-006": "Kompaktes Pannenreparatur-Set",
+    "acc-007": "Gepäckträger aus Aluminium",
+    "acc-008": "Allwetter-Schutzblech-Set",
+    "acc-009": "FamilyRide Kindersitz",
+    "acc-010": "DuoComfort Kinderanhänger",
+    "acc-011": "Carbon Aero Lenkeraufsatz",
+    "acc-012": "Race Ultralight Klickpedale",
+    "acc-013": "Mountain Protektorenset (Knie/Ellbogen)",
+    "acc-014": "Federgabel-Service-Kit",
+    "acc-015": "E-Bike Ersatzakku 500Wh",
+    "acc-016": "E-Bike Schnellladegerät"
+  },
+  "FrameTypes": {
+    "Touring": "Trekking",
+    "Road": "Rennrad",
+    "Mountain": "Mountainbike",
+    "Urban": "City",
+    "E-Cargo": "E-Lastenrad",
+    "E-Urban": "E-City"
   }
 }

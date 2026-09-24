@@ -25,10 +25,12 @@ export function BikeConfigurator({
   stockFailed = false,
 }: Props) {
   const translate = useTranslations("App");
+  const frameTypes = useTranslations("FrameTypes");
   const format = useFormatter();
   const router = useRouter();
   const { addBundle } = useCart();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [addedToCart, setAddedToCart] = useState(false);
   const addingLock = useRef(false);
 
   if (stockFailed || stock == null) {
@@ -110,9 +112,13 @@ export function BikeConfigurator({
       gross: bundleTotals.gross,
     });
     setQuantities({});
-    queueMicrotask(() => {
+    setAddedToCart(true);
+    window.setTimeout(() => {
       addingLock.current = false;
-    });
+    }, 400);
+    window.setTimeout(() => {
+      setAddedToCart(false);
+    }, 2000);
   }
 
   return (
@@ -127,7 +133,9 @@ export function BikeConfigurator({
             <h1 className="text-2xl font-semibold tracking-tight">
               {bike.name}
             </h1>
-            <p className="mt-2 text-sm text-zinc-600">{bike.frameType}</p>
+            <p className="mt-2 text-sm text-zinc-600">
+              {frameTypes(bike.frameType)}
+            </p>
             <p className="mt-2 text-sm text-zinc-600">
               {translate("stockAvailability", {
                 status: bikeInStock
@@ -154,7 +162,7 @@ export function BikeConfigurator({
       />
 
       <BundleSummary totals={bundleTotals} />
-      <div className="mt-4 flex justify-end px-4">
+      <div className="mt-4 flex flex-col items-end gap-2 px-4">
         <button
           type="button"
           onClick={handleAddToCart}
@@ -163,6 +171,11 @@ export function BikeConfigurator({
         >
           {translate("addToCart")}
         </button>
+        {addedToCart ? (
+          <p className="text-sm text-zinc-600" role="status" aria-live="polite">
+            {translate("addToCartSuccess")}
+          </p>
+        ) : null}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { useRouter } from "@/i18n/navigation";
 import { requestCheckout } from "@/services/checkout";
@@ -11,17 +11,21 @@ type CheckoutFeedback =
 
 export function CartView() {
   const translate = useTranslations("App");
+  const translateAccessory = useTranslations("Accessories");
+  const frameTypes = useTranslations("FrameTypes");
   const format = useFormatter();
   const router = useRouter();
   const { bundles, removeBundle, clearCart } = useCart();
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState<CheckoutFeedback | null>(null);
+  const checkoutLock = useRef(false);
 
   async function handleCheckout() {
-    if (pending || bundles.length === 0) {
+    if (checkoutLock.current || bundles.length === 0) {
       return;
     }
 
+    checkoutLock.current = true;
     setPending(true);
     setFeedback(null);
 
@@ -49,6 +53,7 @@ export function CartView() {
         message: translate("checkoutSuccess"),
       });
     } finally {
+      checkoutLock.current = false;
       setPending(false);
     }
   }
@@ -94,12 +99,14 @@ export function CartView() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="font-medium">{bundle.bike.name}</p>
-                <p className="text-sm text-zinc-600">{bundle.bike.frameType}</p>
+                <p className="text-sm text-zinc-600">
+                  {frameTypes(bundle.bike.frameType)}
+                </p>
                 {bundle.accessories.length > 0 ? (
                   <ul className="mt-2 space-y-1 text-sm text-zinc-600">
                     {bundle.accessories.map(({ accessory, quantity }) => (
                       <li key={accessory.id}>
-                        {accessory.name} × {quantity}
+                        {translateAccessory(accessory.id)} × {quantity}
                       </li>
                     ))}
                   </ul>
@@ -138,12 +145,9 @@ export function CartView() {
         ))}
       </ul>
 
-      <section
-        className="border-t border-zinc-200 px-4 pt-6"
-        aria-live="polite"
-      >
+      <section className="border-t border-zinc-200 px-4 pt-6">
         <h2 className="text-lg font-medium">{translate("cartSummary")}</h2>
-        <dl className="mt-4 space-y-2 text-sm">
+        <dl className="mt-4 space-y-2 text-sm" aria-live="polite">
           <div className="flex justify-between gap-4">
             <dt className="text-zinc-600">{translate("netTotal")}</dt>
             <dd className="font-medium tabular-nums">

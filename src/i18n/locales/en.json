@@ -10,6 +10,7 @@
     "netTotal": "Net",
     "grossTotal": "Gross",
     "addToCart": "Add bundle to cart",
+    "addToCartSuccess": "Added to cart.",
     "navConfigurator": "Configurator",
     "navCart": "Cart",
     "navCartLabel": "Cart, {count} bundles",
@@ -31,5 +32,31 @@
     "loading": "Loading…",
     "stockUnavailable": "Something went wrong. Please try again.",
     "stockRetry": "Retry"
+  },
+  "Accessories": {
+    "acc-001": "Urban Pro Bike Helmet",
+    "acc-002": "SecureLock Chain Lock 12mm",
+    "acc-003": "LED Light Set Front & Rear",
+    "acc-004": "GPS Bike Computer Basic",
+    "acc-005": "Aluminum Bottle Cage",
+    "acc-006": "Compact Puncture Repair Kit",
+    "acc-007": "Aluminum Rear Rack",
+    "acc-008": "All-Weather Fender Set",
+    "acc-009": "FamilyRide Child Seat",
+    "acc-010": "DuoComfort Child Trailer",
+    "acc-011": "Carbon Aero Handlebar Extension",
+    "acc-012": "Race Ultralight Clipless Pedals",
+    "acc-013": "Mountain Protective Gear Set (Knee/Elbow)",
+    "acc-014": "Suspension Fork Service Kit",
+    "acc-015": "E-Bike Spare Battery 500Wh",
+    "acc-016": "E-Bike Fast Charger"
+  },
+  "FrameTypes": {
+    "Touring": "Touring",
+    "Road": "Road",
+    "Mountain": "Mountain",
+    "Urban": "Urban",
+    "E-Cargo": "E-Cargo",
+    "E-Urban": "E-Urban"
   }
 }

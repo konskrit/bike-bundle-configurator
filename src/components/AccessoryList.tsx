@@ -20,6 +20,7 @@ export function AccessoryList({
   onQuantityChange,
 }: Props) {
   const translate = useTranslations("App");
+  const translateAccessory = useTranslations("Accessories");
   const format = useFormatter();
 
   const compatible = accessories.filter((accessory) =>
@@ -36,6 +37,7 @@ export function AccessoryList({
           const quantity = quantities[accessory.id] ?? 0;
           const available = stock[accessory.id] ?? 0;
           const max = Math.min(accessory.maxAmount, available);
+          const name = translateAccessory(accessory.id);
 
           return (
             <li
@@ -43,7 +45,7 @@ export function AccessoryList({
               className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
-                <p className="font-medium">{accessory.name}</p>
+                <p className="font-medium">{name}</p>
                 <p className="shrink-0 text-sm text-zinc-600 tabular-nums">
                   {format.number(accessory.price, {
                     style: "currency",
@@ -62,7 +64,7 @@ export function AccessoryList({
               </div>
               <label className="flex items-center gap-3 text-sm">
                 <span className="sr-only">
-                  {translate("quantityLabel", { name: accessory.name })}
+                  {translate("quantityLabel", { name })}
                 </span>
                 <input
                   type="range"
