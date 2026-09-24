@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { collectStockItems } from "./checkout";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { collectStockItems, requestCheckout } from "./checkout";
 import type { CartBundle } from "@/types/cart";
 import type { Accessory, Bike } from "@/types/catalog";
 
@@ -56,5 +56,64 @@ describe("collectStockItems", () => {
 
   it("returns an empty list for an empty cart", () => {
     expect(collectStockItems([])).toEqual([]);
+  });
+});
+
+describe("requestCheckout", () => {
+  const cart = [bundle("1", "bike-a")];
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  function stubFetch(status: number) {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(null, { status })),
+    );
+  }
+
+  it("returns ok when the stock API succeeds", async () => {
+    stubFetch(200);
+    await expect(requestCheckout(cart)).resolves.toEqual({ ok: true });
+  });
+
+  it("maps 503 to stock_unavailable", async () => {
+    stubFetch(503);
+    await expect(requestCheckout(cart)).resolves.toEqual({
+      ok: false,
+      reason: "stock_unavailable",
+    });
+  });
+
+  it("maps 409 to insufficient_stock", async () => {
+    stubFetch(409);
+    await expect(requestCheckout(cart)).resolves.toEqual({
+      ok: false,
+      reason: "insufficient_stock",
+    });
+  });
+
+  it("maps other HTTP errors to failed", async () => {
+    stubFetch(500);
+    await expect(requestCheckout(cart)).resolves.toEqual({
+      ok: false,
+      reason: "failed",
+    });
+  });
+
+  it("maps network failures to failed", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        throw new TypeError("Failed to fetch");
+      }),
+    );
+
+    await expect(requestCheckout(cart)).resolves.toEqual({
+      ok: false,
+      reason: "failed",
+    });
   });
 });
