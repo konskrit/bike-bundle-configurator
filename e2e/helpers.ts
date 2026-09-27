@@ -83,33 +83,6 @@ export async function removeCartBundle(page: Page, bikeName: string) {
   await bundle.getByRole("button", { name: `Remove: ${bikeName}` }).click();
 }
 
-export async function checkoutUntilSuccess(page: Page) {
-  const success = page.getByRole("status").filter({
-    hasText: "Order placed successfully.",
-  });
-  const retryableError = page.locator("p[role='alert']").filter({
-    hasText: /Something went wrong|Checkout failed/,
-  });
-  const checkout = page.getByRole("button", { name: "Checkout" });
-
-  for (let attempt = 0; attempt < 20; attempt += 1) {
-    if (await success.isVisible().catch(() => false)) {
-      return;
-    }
-
-    await expect(checkout).toBeEnabled({ timeout: 5_000 });
-    await checkout.click();
-
-    await expect(success.or(retryableError)).toBeVisible({ timeout: 15_000 });
-
-    if (await success.isVisible().catch(() => false)) {
-      return;
-    }
-  }
-
-  throw new Error("Checkout never succeeded");
-}
-
 export async function clickCheckout(page: Page) {
   const checkout = page.getByRole("button", { name: "Checkout" });
   await expect(checkout).toBeEnabled();
@@ -125,6 +98,24 @@ export async function mockStockOk(
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({ items }),
+    });
+  });
+}
+
+export async function mockStockInsufficient(
+  page: Page,
+  items: {
+    id: string;
+    available: number;
+    requested: number;
+    ok: boolean;
+  }[],
+) {
+  await page.route("**/api/stock", async (route) => {
+    await route.fulfill({
+      status: 409,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "INSUFFICIENT_STOCK", items }),
     });
   });
 }

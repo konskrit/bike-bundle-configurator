@@ -116,4 +116,18 @@ describe("requestCheckout", () => {
       reason: "failed",
     });
   });
+
+  it("maps abort timeouts to failed", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        throw new DOMException("The operation was aborted", "AbortError");
+      }),
+    );
+
+    await expect(requestCheckout(cart)).resolves.toEqual({
+      ok: false,
+      reason: "failed",
+    });
+  });
 });

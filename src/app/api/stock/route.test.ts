@@ -6,11 +6,12 @@ vi.mock("@/server/stock", async (importOriginal) => {
   const stock = await importOriginal<typeof import("@/server/stock")>();
   return {
     ...stock,
-    withStockLatency: async <T>(run: () => T | Promise<T>) => run(),
+    withStockLatency: vi.fn(async <T>(run: () => T | Promise<T>) => run()),
   };
 });
 
 import { POST } from "./route";
+import { StockServiceError, withStockLatency } from "@/server/stock";
 
 const initialStock = stockJson as Record<string, number>;
 
@@ -46,6 +47,13 @@ describe("POST /api/stock", () => {
     expect(availableFor("bike-001")).toBe(4);
   });
 
+  it("rejects an empty items list", async () => {
+    const response = await post({ items: [] });
+
+    expect(response.status).toBe(400);
+    expect(availableFor("bike-001")).toBe(4);
+  });
+
   it("reserves stock when the request fits", async () => {
     const response = await post({
       items: [{ id: "bike-001", quantity: 2 }],
@@ -61,6 +69,17 @@ describe("POST /api/stock", () => {
     });
 
     expect(response.status).toBe(409);
+    expect(availableFor("bike-001")).toBe(4);
+  });
+
+  it("returns 503 when the stock service fails", async () => {
+    vi.mocked(withStockLatency).mockRejectedValueOnce(new StockServiceError());
+
+    const response = await post({
+      items: [{ id: "bike-001", quantity: 1 }],
+    });
+
+    expect(response.status).toBe(503);
     expect(availableFor("bike-001")).toBe(4);
   });
 });

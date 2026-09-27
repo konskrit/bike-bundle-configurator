@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 import {
   cartAccessoryRow,
-  checkoutUntilSuccess,
   clickCheckout,
   formatEur,
+  mockStockInsufficient,
   mockStockOk,
   openBikeWithStock,
   removeCartAccessory,
@@ -215,24 +215,23 @@ test("shows insufficient stock when cart exceeds available quantity", async ({
 
   await page.getByRole("link", { name: /Cart/ }).click();
 
+  await mockStockInsufficient(page, [
+    { id: "bike-006", available: 1, requested: 2, ok: false },
+  ]);
+
   const insufficient = page.locator("p[role='alert']").filter({
     hasText: "Some items are not available in the requested quantity.",
   });
-  const retryable = page.locator("p[role='alert']").filter({
-    hasText: /Something went wrong|Checkout failed/,
-  });
 
-  for (let attempt = 0; attempt < 20; attempt += 1) {
-    await clickCheckout(page);
-    await expect(insufficient.or(retryable)).toBeVisible({ timeout: 15_000 });
+  await clickCheckout(page);
+  await expect(insufficient).toBeVisible();
+  await expect(page.getByText("Rockrider Enduro Pro")).toHaveCount(2);
 
-    if (await insufficient.isVisible().catch(() => false)) {
-      await expect(page.getByText("Rockrider Enduro Pro")).toHaveCount(2);
-      return;
-    }
-  }
-
-  throw new Error("Never received insufficient stock error");
+  await page
+    .getByRole("button", { name: "Remove: Rockrider Enduro Pro" })
+    .first()
+    .click();
+  await expect(insufficient).toBeHidden();
 });
 
 test("shows stock-service error and recovers after retry", async ({ page }) => {
@@ -320,7 +319,12 @@ test("configures a bundle with accessories and completes checkout", async ({
     { id: "acc-006", available: 3, requested: 1, ok: true },
   ]);
 
-  await checkoutUntilSuccess(page);
+  await clickCheckout(page);
+  await expect(
+    page.getByRole("status").filter({
+      hasText: "Order placed successfully.",
+    }),
+  ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Cart, 0 bundles" }),
   ).toBeVisible();
