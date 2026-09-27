@@ -39,7 +39,7 @@ On the configurator, accessory quantity is capped by live stock and `maxAmount`.
 
 ## Bonuses
 
-Race conditions: add to cart and checkout use ref locks so double submits do not run twice. Quantity sliders are controlled React state, so rapid dragging does not leave the cart in an inconsistent shape. These guards are client side; the in-memory reserve is not atomic across concurrent requests, which a real inventory service would handle inside a transaction.
+Race conditions: add to cart and checkout use ref locks so double submits do not run twice. These guards are client side; the in-memory reserve is not atomic across concurrent requests, which a real inventory service would handle inside a transaction.
 
 i18n: EN and DE for UI chrome, accessory names, frame types, and locale formatted EUR prices, switchable in the header. Bike names are left in the catalog language on purpose (brand/model strings from `data/bikes.json` do not change by locale).
 
