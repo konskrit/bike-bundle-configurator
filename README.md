@@ -31,7 +31,7 @@ Checkout goes through `POST /api/stock`, which validates the body, reserves inve
 
 The cart sits in the browser with `localStorage` and `useSyncExternalStore`, so moving between configurator and cart does not drop bundles and SSR stays hydration safe.
 
-Stock is an in-memory copy of `data/stock.json` on the Node process, with artificial latency and about a 10% failure rate. The bike detail page reads levels for display (that read can fail too; the UI offers Retry). Reservation happens at checkout, not on add to cart. Checkout maps stock service down (503), insufficient quantity (409), and network failure to clear messages.
+Stock is an in-memory copy of `data/stock.json` on the Node process, with artificial latency and about a 10% failure rate. The bike detail page reads levels for display (that read can fail too; the UI offers Retry); the bike list stays catalog only so it does not wait on the slow stock service. Reservation happens at checkout, not on add to cart. Checkout maps stock service down (503), insufficient quantity (409), and network failure to clear messages.
 
 ## Stock vs cart
 
@@ -39,7 +39,7 @@ On the configurator, accessory quantity is capped by live stock and `maxAmount`.
 
 ## Bonuses
 
-Race conditions: add to cart and checkout use ref locks so double submits do not run twice. Quantity sliders are controlled React state, so rapid dragging does not leave the cart in an inconsistent shape.
+Race conditions: add to cart and checkout use ref locks so double submits do not run twice. Quantity sliders are controlled React state, so rapid dragging does not leave the cart in an inconsistent shape. These guards are client side; the in-memory reserve is not atomic across concurrent requests, which a real inventory service would handle inside a transaction.
 
 i18n: EN and DE for UI chrome, accessory names, frame types, and locale formatted EUR prices, switchable in the header. Bike names are left in the catalog language on purpose (brand/model strings from `data/bikes.json` do not change by locale).
 
@@ -53,6 +53,10 @@ Max 10 product types with a progress UI was skipped for time. The cart stays sma
 
 Inventory stays in process memory only. That is enough to show flaky reserve and errors; it is not a multi instance store.
 
+`POST /api/stock` validates the body shape (including rejecting an empty `items` list) but not catalog membership, `maxAmount`, or auth. In production, reservation would run against a server side order instead of a client supplied item list.
+
+Prices are plain JS numbers formatted with `Intl`; production would store integer cents. The cart keeps a snapshot of products and totals in `localStorage` and checkout does not reprice; a real checkout would reprice from the server catalog.
+
 ## Libraries
 
 Next.js App Router is required and drives the RSC / client / route handler split.
@@ -61,13 +65,13 @@ Next.js App Router is required and drives the RSC / client / route handler split
 
 Vitest covers pricing, cart helpers, in memory stock check and reserve, checkout status mapping, and the stock route handler.
 
-Playwright covers real flows against a production build: cart edits, out of stock UI, insufficient stock, 503, network failure, and a successful checkout with reserve mocked so re runs do not eat inventory.
+Playwright covers real flows against a production build: cart edits, out of stock UI, and checkout outcomes with `POST /api/stock` mocked for success, insufficient stock (409), 503, and network failure so CI stays deterministic and re runs do not eat inventory.
 
 No Redux or similar. The cart is small enough for a module store plus React context.
 
 ## Deploy sketch
 
-I would deploy on Vercel (or another Node host that supports the App Router and Route Handlers). Preview deployments per PR, production on `main`.
+I would deploy on Vercel (or another Node host that supports the App Router and Route Handlers). Preview deployments per PR, production on `master`.
 
 Caching: static assets and the mostly static catalog can use the CDN edge cache. Bike detail and checkout must stay dynamic because they depend on live stock. In a fuller setup I would cache catalog reads with a short TTL or tag based revalidation, and never cache reservation responses. Today the detail page is `force-dynamic` for that reason.
 
@@ -79,4 +83,4 @@ Rollback: each deploy is an immutable build. If production misbehaves, promote o
 
 Units cover net/gross pricing, cart accessory updates, stock check and reserve (including duplicate ids), `requestCheckout` status mapping, and `POST /api/stock` validation plus reserve and 409.
 
-E2E covers configure, cart edit and remove, out of stock controls, successful checkout (reserve mocked), and failure paths for insufficient stock, stock service down, and network errors.
+E2E covers configure, cart edit and remove, out of stock controls, and checkout UI for success, insufficient stock, stock service down, and network errors (`POST /api/stock` mocked for those status paths).
