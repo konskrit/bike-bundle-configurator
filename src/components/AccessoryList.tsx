@@ -1,5 +1,3 @@
-"use client";
-
 import { useFormatter, useTranslations } from "next-intl";
 import type { Accessory } from "@/types/catalog";
 import type { StockLevels } from "@/types/stock";

@@ -55,7 +55,6 @@ async function BikePageContent({
   accessories: Accessory[];
 }) {
   let stock: StockLevels | null = null;
-  let stockFailed = false;
 
   try {
     const items = await withStockLatency(() => catalogStockLevels());
@@ -64,16 +63,9 @@ async function BikePageContent({
     if (!(error instanceof StockServiceError)) {
       throw error;
     }
-
-    stockFailed = true;
   }
 
   return (
-    <BikeConfigurator
-      bike={bike}
-      accessories={accessories}
-      stock={stock}
-      stockFailed={stockFailed}
-    />
+    <BikeConfigurator bike={bike} accessories={accessories} stock={stock} />
   );
 }

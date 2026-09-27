@@ -15,15 +15,9 @@ type Props = {
   bike: Bike;
   accessories: Accessory[];
   stock: StockLevels | null;
-  stockFailed?: boolean;
 };
 
-export function BikeConfigurator({
-  bike,
-  accessories,
-  stock,
-  stockFailed = false,
-}: Props) {
+export function BikeConfigurator({ bike, accessories, stock }: Props) {
   const translate = useTranslations("App");
   const frameTypes = useTranslations("FrameTypes");
   const format = useFormatter();
@@ -31,9 +25,10 @@ export function BikeConfigurator({
   const { addBundle } = useCart();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [addedToCart, setAddedToCart] = useState(false);
+  const [adding, setAdding] = useState(false);
   const addingLock = useRef(false);
 
-  if (stockFailed || stock == null) {
+  if (stock == null) {
     return (
       <div className="mt-8 space-y-4">
         <Link href="/" className="text-sm text-zinc-600 underline">
@@ -94,6 +89,7 @@ export function BikeConfigurator({
     }
 
     addingLock.current = true;
+    setAdding(true);
     addBundle({
       bike,
       accessories: accessoryLines,
@@ -104,6 +100,7 @@ export function BikeConfigurator({
     setAddedToCart(true);
     window.setTimeout(() => {
       addingLock.current = false;
+      setAdding(false);
     }, 400);
     window.setTimeout(() => {
       setAddedToCart(false);
@@ -155,7 +152,7 @@ export function BikeConfigurator({
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={!bikeInStock}
+          disabled={!bikeInStock || adding}
           className="rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
         >
           {translate("addToCart")}

@@ -1,5 +1,3 @@
-"use client";
-
 import { useFormatter, useTranslations } from "next-intl";
 import { useCart } from "@/components/CartProvider";
 import { netAmount } from "@/lib/pricing";

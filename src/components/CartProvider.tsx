@@ -2,7 +2,6 @@
 
 import {
   createContext,
-  useCallback,
   useContext,
   useSyncExternalStore,
   type ReactNode,
@@ -76,37 +75,38 @@ if (typeof window !== "undefined") {
   bundles = readStorage();
 }
 
+function addBundle(bundle: Omit<CartBundle, "id">) {
+  persist([...bundles, { ...bundle, id: crypto.randomUUID() }]);
+}
+
+function removeBundle(bundleId: string) {
+  persist(bundles.filter((bundle) => bundle.id !== bundleId));
+}
+
+function updateAccessoryQuantity(
+  bundleId: string,
+  accessoryId: string,
+  quantity: number,
+) {
+  persist(
+    bundles.map((bundle) =>
+      bundle.id === bundleId
+        ? withAccessoryQuantity(bundle, accessoryId, quantity)
+        : bundle,
+    ),
+  );
+}
+
+function clearCart() {
+  persist([]);
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const snapshot = useSyncExternalStore(
     subscribe,
     getClientSnapshot,
     getServerSnapshot,
   );
-
-  const addBundle = useCallback((bundle: Omit<CartBundle, "id">) => {
-    persist([...bundles, { ...bundle, id: crypto.randomUUID() }]);
-  }, []);
-
-  const removeBundle = useCallback((bundleId: string) => {
-    persist(bundles.filter((bundle) => bundle.id !== bundleId));
-  }, []);
-
-  const updateAccessoryQuantity = useCallback(
-    (bundleId: string, accessoryId: string, quantity: number) => {
-      persist(
-        bundles.map((bundle) =>
-          bundle.id === bundleId
-            ? withAccessoryQuantity(bundle, accessoryId, quantity)
-            : bundle,
-        ),
-      );
-    },
-    [],
-  );
-
-  const clearCart = useCallback(() => {
-    persist([]);
-  }, []);
 
   return (
     <CartContext.Provider
