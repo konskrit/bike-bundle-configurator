@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   }
 
   const items = (body as { items: unknown[] }).items;
-  if (!items.every(isStockItem)) {
+  if (items.length === 0 || !items.every(isStockItem)) {
     return Response.json({ error: "INVALID_BODY" }, { status: 400 });
   }
 
