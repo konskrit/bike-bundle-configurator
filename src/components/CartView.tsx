@@ -6,9 +6,11 @@ import { CartBundleItem } from "@/components/CartBundleItem";
 import { useCart } from "@/components/CartProvider";
 import { useRouter } from "@/i18n/navigation";
 import { requestCheckout } from "@/services/checkout";
+import type { CartBundle } from "@/types/cart";
 
 type CheckoutFeedback =
-  { type: "success"; message: string } | { type: "error"; message: string };
+  | { type: "success"; message: string }
+  | { type: "error"; message: string; bundles: CartBundle[] };
 
 export function CartView() {
   const translate = useTranslations("App");
@@ -41,6 +43,7 @@ export function CartView() {
                 ? "checkoutErrorInsufficient"
                 : "checkoutErrorGeneric",
           ),
+          bundles,
         });
         return;
       }
@@ -132,7 +135,7 @@ export function CartView() {
           </button>
         </div>
 
-        {feedback?.type === "error" ? (
+        {feedback?.type === "error" && feedback.bundles === bundles ? (
           <p className="mt-4 text-sm text-red-700" role="alert">
             {feedback.message}
           </p>
